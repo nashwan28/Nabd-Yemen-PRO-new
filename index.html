@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B4F6C">
+    <meta name="description" content="منصة نبض اليمن برو - الوساطة الذكية بين الكوادر الطبية والمنشآت الصحية">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>نبض اليمن برو | منصة التوظيف الطبي</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            /* Medical Blue Theme */
+            --primary-blue: #0B4F6C;
+            --secondary-blue: #1E88A8;
+            --accent-cyan: #00B4D8;
+            --light-cyan: #90E0EF;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFB;
+            --text-dark: #1A1A2E;
+            --text-gray: #6C757D;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --error-red: #EF4444;
+            --border-color: #E5E7EB;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Typography */
+            --font-display: 'Cairo', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(11, 79, 108, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(11, 79, 108, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(11, 79, 108, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(11, 79, 108, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Header & Navigation */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--bg-white);
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--bg-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: 8px;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--accent-cyan) 100%);
+            padding: var(--spacing-2xl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: var(--bg-white);
+        }
+        
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.95;
+            font-weight: 400;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease-out 0.4s backwards;
+        }
+        
+        .btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-primary {
+            background: var(--bg-white);
+            color: var(--primary-blue);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--bg-white);
+            border: 2px solid var(--bg-white);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-white);
+            color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: var(--spacing-2xl) 0;
+            background: var(--bg-light);
+        }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            color: var(--primary-blue);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .feature-card {
+            background: var(--bg-white);
+            padding: var(--spacing-xl);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-cyan);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--primary-blue);
+        }
+        
+        .feature-desc {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: var(--spacing-2xl) 0;
+            background: var(--bg-white);
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--bg-white);
+            margin: 0 auto var(--spacing-md);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .step-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--primary-blue);
+        }
+        
+        .step-desc {
+            color: var(--text-gray);
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            padding: var(--spacing-2xl) 0;
+            color: var(--bg-white);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: var(--bg-light);
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-blue);
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--bg-white);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .footer-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--accent-cyan);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: var(--spacing-md);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: var(--spacing-xl) 0;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .features-grid,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <div class="logo-icon">💙</div>
+                    <span>نبض اليمن برو</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features" class="nav-link">المميزات</a></li>
+                    <li><a href="#how-it-works" class="nav-link">كيف يعمل</a></li>
+                    <li><a href="login.html" class="nav-link">تسجيل الدخول</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">منصة نبض اليمن برو</h1>
+                <p class="hero-subtitle">الوساطة الذكية بين الكوادر الطبية والمنشآت الصحية في اليمن</p>
+                <div class="hero-cta">
+                    <a href="register.html?type=doctor" class="btn btn-primary">
+                        <span>👨‍⚕️</span>
+                        <span>تسجيل كطبيب</span>
+                    </a>
+                    <a href="register.html?type=employer" class="btn btn-secondary">
+                        <span>🏥</span>
+                        <span>تسجيل كمنشأة طبية</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">لماذا نبض اليمن برو؟</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">خصوصية محمية</h3>
+                    <p class="feature-desc">بياناتك الشخصية مخفية تماماً حتى القبول للمقابلة، لضمان جدية التواصل وحماية معلوماتك</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">تطابق ذكي</h3>
+                    <p class="feature-desc">خوارزمية متطورة تربطك بالفرص المناسبة تماماً لتخصصك وخبرتك وموقعك الجغرافي</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">إشعارات فورية</h3>
+                    <p class="feature-desc">رسائل واتساب تلقائية تصلك فور توفر فرصة مناسبة، لا تفوت أي فرصة</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">طلبات عاجلة</h3>
+                    <p class="feature-desc">نظام خاص للمناوبات والتغطيات الفورية، مثالي للمستشفيات في حالات الطوارئ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">سيرة ذاتية احترافية</h3>
+                    <p class="feature-desc">باني سيرة ذاتية مدمج ينشئ لك بروفايل طبي أنيق دون الحاجة لرفع ملفات</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3 class="feature-title">شفافية كاملة</h3>
+                    <p class="feature-desc">نظام واضح ومباشر، تعرف تفاصيل الوظيفة والراتب قبل التقديم</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">كيف تعمل المنصة؟</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">التسجيل وبناء الملف</h3>
+                    <p class="step-desc">سجل بياناتك المهنية واملأ حقول السيرة الذاتية المدمجة</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">المطابقة الذكية</h3>
+                    <p class="step-desc">النظام يبحث عن الفرص المناسبة لك تلقائياً بناءً على معايير دقيقة</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">الإشعار والتقديم</h3>
+                    <p class="step-desc">تصلك رسالة واتساب فورية عند توفر فرصة مناسبة، قدم بضغطة واحدة</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">القبول والتواصل</h3>
+                    <p class="step-desc">عند قبولك للمقابلة، تُكشف بيانات التواصل للطرفين فوراً</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">كادر طبي مسجل</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">منشأة طبية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1200+</div>
+                    <div class="stat-label">فرصة وظيفية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">معدل النجاح</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">ابدأ رحلتك المهنية اليوم</h2>
+            <p class="cta-text">انضم إلى مئات الأطباء والمنشآت الطبية الذين يثقون بنا</p>
+            <div class="hero-cta">
+                <a href="register.html?type=doctor" class="btn btn-primary">
+                    <span>👨‍⚕️</span>
+                    <span>سجل كطبيب الآن</span>
+                </a>
+                <a href="register.html?type=employer" class="btn btn-secondary">
+                    <span>🏥</span>
+                    <span>سجل منشأتك الطبية</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>عن نبض اليمن برو</h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.8;">
+                        منصة وساطة ذكية تربط الكوادر الطبية بالمنشآت الصحية في اليمن، 
+                        نضمن الخصوصية والشفافية في كل خطوة.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#how-it-works">كيف يعمل</a></li>
+                        <li><a href="login.html">تسجيل الدخول</a></li>
+                        <li><a href="register.html">إنشاء حساب</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>اتصل بنا</h3>
+                    <ul class="footer-links">
+                        <li>📧 info@nabd-yemen.pro</li>
+                        <li>📱 +967 XXX XXX XXX</li>
+                        <li>📍 صنعاء، اليمن</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 نبض اليمن برو. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // PWA Installation
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Hide loading screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

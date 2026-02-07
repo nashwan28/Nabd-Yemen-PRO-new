@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B4F6C">
+    <title>لوحة التحكم - نبض اليمن برو</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            --primary-blue: #0B4F6C;
+            --secondary-blue: #1E88A8;
+            --accent-cyan: #00B4D8;
+            --light-cyan: #90E0EF;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFB;
+            --text-dark: #1A1A2E;
+            --text-gray: #6C757D;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --error-red: #EF4444;
+            --border-color: #E5E7EB;
+            --font-display: 'Cairo', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--bg-white);
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(11, 79, 108, 0.2);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .user-details h2 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .user-details p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: var(--bg-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-gray);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(30, 136, 168, 0.1) 100%);
+            color: var(--primary-blue);
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            min-height: 80vh;
+        }
+        
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--secondary-blue));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Filters */
+        .filters {
+            background: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: var(--font-body);
+        }
+        
+        /* Job Cards */
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .job-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-cyan);
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .job-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .job-type-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-permanent {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
+        
+        .badge-urgent {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+        
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .job-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+        }
+        
+        .job-detail-icon {
+            font-size: 1.1rem;
+        }
+        
+        .job-salary {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success-green);
+            margin: 1rem 0;
+        }
+        
+        .job-match {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+            border: 2px solid var(--success-green);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .match-percentage {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--success-green);
+        }
+        
+        .job-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--bg-white);
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(11, 79, 108, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--primary-blue);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-white);
+            border-color: var(--accent-cyan);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--bg-white);
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .pledge-box {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border: 2px solid var(--warning-orange);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .pledge-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: #92400E;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pledge-text {
+            color: #78350F;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .pledge-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: #78350F;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-gray);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 968px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="user-info">
+                <div class="user-avatar">👨‍⚕️</div>
+                <div class="user-details">
+                    <h2>د. أحمد محمد</h2>
+                    <p>أخصائي باطنية - صنعاء</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" title="الإشعارات">🔔</button>
+                <button class="btn-icon" title="الإعدادات">⚙️</button>
+                <button class="btn-icon" title="تسجيل الخروج">🚪</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-page="jobs">
+                            <span class="nav-icon">💼</span>
+                            <span>الوظائف المتاحة</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="applications">
+                            <span class="nav-icon">📋</span>
+                            <span>طلباتي</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="profile">
+                            <span class="nav-icon">👤</span>
+                            <span>الملف الشخصي</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="urgent">
+                            <span class="nav-icon">⚡</span>
+                            <span>الطلبات العاجلة</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Section -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">وظائف متاحة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">طلبات قيد المراجعة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">مقبول للمقابلة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">نسبة التطابق</div>
+                </div>
+            </div>
+
+            <h1 class="page-title">الوظائف المتاحة</h1>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>نوع الوظيفة</label>
+                        <select id="jobTypeFilter">
+                            <option value="">جميع الأنواع</option>
+                            <option value="permanent">وظائف دائمة</option>
+                            <option value="urgent">طلبات عاجلة</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>التخصص</label>
+                        <select id="specialtyFilter">
+                            <option value="">جميع التخصصات</option>
+                            <option value="باطنية">باطنية</option>
+                            <option value="جراحة">جراحة</option>
+                            <option value="أطفال">أطفال</option>
+                            <option value="طوارئ">طوارئ</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>المحافظة</label>
+                        <select id="locationFilter">
+                            <option value="">جميع المحافظات</option>
+                            <option value="صنعاء">صنعاء</option>
+                            <option value="عدن">عدن</option>
+                            <option value="تعز">تعز</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div class="jobs-grid" id="jobsGrid">
+                <!-- Job Card 1 - High Match -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3 class="job-title">أخصائي باطنية</h3>
+                        </div>
+                        <span class="job-type-badge badge-permanent">وظيفة دائمة</span>
+                    </div>
+                    
+                    <div class="job-details">
+                        <div class="job-detail">
+                            <span class="job-detail-icon">🏥</span>
+                            <span>مستشفى الأمل</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📍</span>
+                            <span>صنعاء</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">⏱️</span>
+                            <span>دوام كامل</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📅</span>
+                            <span>منذ يومين</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-salary">💰 الراتب: يحدد بعد المقابلة</div>
+                    
+                    <div class="job-match">
+                        <div class="match-percentage">🎯 تطابق 100%</div>
+                        <div style="color: var(--success-green); font-size: 0.9rem; margin-top: 0.25rem;">
+                            مؤهلاتك تتطابق تماماً مع متطلبات الوظيفة
+                        </div>
+                    </div>
+                    
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="openApplicationModal('job1')">
+                            <span>تقديم طلب</span>
+                            <span>✓</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails('job1')">
+                            <span>التفاصيل</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Job Card 2 - Urgent -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3 class="job-title">مناوبة طوارئ - عاجل</h3>
+                        </div>
+                        <span class="job-type-badge badge-urgent">طلب عاجل ⚡</span>
+                    </div>
+                    
+                    <div class="job-details">
+                        <div class="job-detail">
+                            <span class="job-detail-icon">🏥</span>
+                            <span>مستشفى السلام</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📍</span>
+                            <span>عدن</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">⏱️</span>
+                            <span>مناوبة ليلية</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📅</span>
+                            <span>اليوم 8م - 8ص</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-salary">💰 المقابل: 30,000 ريال (فوري)</div>
+                    
+                    <div class="job-match">
+                        <div class="match-percentage">🎯 تطابق 90%</div>
+                        <div style="color: var(--success-green); font-size: 0.9rem; margin-top: 0.25rem;">
+                            مناسب لتخصصك - تحتاج انتقال لعدن
+                        </div>
+                    </div>
+                    
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="openApplicationModal('job2')">
+                            <span>قبول المناوبة</span>
+                            <span>⚡</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails('job2')">
+                            <span>التفاصيل</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Job Card 3 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3 class="job-title">طبيب طوارئ</h3>
+                        </div>
+                        <span class="job-type-badge badge-permanent">وظيفة دائمة</span>
+                    </div>
+                    
+                    <div class="job-details">
+                        <div class="job-detail">
+                            <span class="job-detail-icon">🏥</span>
+                            <span>مستشفى الثورة</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📍</span>
+                            <span>تعز</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">⏱️</span>
+                            <span>نظام مناوبات</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📅</span>
+                            <span>منذ 3 أيام</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-salary">💰 الراتب: 200,000 - 250,000 ريال</div>
+                    
+                    <div class="job-match">
+                        <div class="match-percentage">🎯 تطابق 85%</div>
+                        <div style="color: var(--warning-orange); font-size: 0.9rem; margin-top: 0.25rem;">
+                            مطلوب خبرة طوارئ محددة
+                        </div>
+                    </div>
+                    
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="openApplicationModal('job3')">
+                            <span>تقديم طلب</span>
+                            <span>✓</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails('job3')">
+                            <span>التفاصيل</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">تأكيد التقديم للوظيفة</h2>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-gray); line-height: 1.8; margin-bottom: 1.5rem;">
+                    أنت على وشك التقديم لوظيفة <strong style="color: var(--primary-blue);" id="modalJobTitle"></strong>
+                </p>
+                
+                <div class="pledge-box">
+                    <div class="pledge-title">
+                        <span>⚖️</span>
+                        <span>التعهد والالتزام</span>
+                    </div>
+                    <p class="pledge-text">
+                        أقرّ بأنني تقدمت لهذه الوظيفة عبر منصة نبض اليمن PRO، وفي حال تم توظيفي 
+                        ألتزم بدفع عمولة المنصة (5% من راتب الشهر الأول) وتكون في ذمتي أمام الله.
+                    </p>
+                    <div class="pledge-checkbox">
+                        <input type="checkbox" id="pledgeConfirm">
+                        <label for="pledgeConfirm">موافق على التعهد المذكور أعلاه</label>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="submitApplication()">
+                        <span>تأكيد التقديم</span>
+                        <span>✓</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal()">
+                        <span>إلغاء</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentJobId = null;
+        
+        function openApplicationModal(jobId) {
+            currentJobId = jobId;
+            const modal = document.getElementById('applicationModal');
+            const titleElement = document.getElementById('modalJobTitle');
+            
+            // Set job title based on jobId
+            const jobTitles = {
+                'job1': 'أخصائي باطنية - مستشفى الأمل',
+                'job2': 'مناوبة طوارئ - مستشفى السلام',
+                'job3': 'طبيب طوارئ - مستشفى الثورة'
+            };
+            
+            titleElement.textContent = jobTitles[jobId] || 'الوظيفة';
+            modal.classList.add('show');
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.classList.remove('show');
+            document.getElementById('pledgeConfirm').checked = false;
+        }
+        
+        function submitApplication() {
+            const pledgeCheckbox = document.getElementById('pledgeConfirm');
+            
+            if (!pledgeCheckbox.checked) {
+                alert('يرجى الموافقة على التعهد للمتابعة');
+                return;
+            }
+            
+            // Simulate application submission
+            console.log('Application submitted for:', currentJobId);
+            
+            // Show success message
+            alert('✅ تم تقديم طلبك بنجاح!\n\nسيتم إشعارك عبر واتساب في حال قبول طلبك للمقابلة.');
+            
+            closeModal();
+        }
+        
+        function viewJobDetails(jobId) {
+            alert('عرض تفاصيل الوظيفة: ' + jobId);
+        }
+        
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                const page = link.dataset.page;
+                console.log('Navigate to:', page);
+            });
+        });
+        
+        // Close modal on outside click
+        document.getElementById('applicationModal').addEventListener('click', (e) => {
+            if (e.target.id === 'applicationModal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

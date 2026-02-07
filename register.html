@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B4F6C">
+    <title>التسجيل - نبض اليمن برو</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            --primary-blue: #0B4F6C;
+            --secondary-blue: #1E88A8;
+            --accent-cyan: #00B4D8;
+            --light-cyan: #90E0EF;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFB;
+            --text-dark: #1A1A2E;
+            --text-gray: #6C757D;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --error-red: #EF4444;
+            --border-color: #E5E7EB;
+            --font-display: 'Cairo', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--bg-light) 0%, #E0F2FE 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateX(5px);
+        }
+        
+        .register-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(11, 79, 108, 0.15);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            padding: 2rem;
+            text-align: center;
+            color: var(--bg-white);
+        }
+        
+        .card-header h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 2rem;
+            background: var(--bg-light);
+        }
+        
+        .type-option {
+            padding: 1.5rem;
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .type-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(11, 79, 108, 0.1);
+        }
+        
+        .type-option.active {
+            border-color: var(--accent-cyan);
+            background: linear-gradient(135deg, rgba(0, 180, 216, 0.05) 0%, rgba(30, 136, 168, 0.05) 100%);
+        }
+        
+        .type-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .type-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        .type-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        
+        .form-container {
+            padding: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-cyan);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        label .required {
+            color: var(--error-red);
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .radio-item input[type="radio"] {
+            width: auto;
+            cursor: pointer;
+        }
+        
+        .location-preferences {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        
+        .location-preferences.show {
+            display: block;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--bg-white);
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(11, 79, 108, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(11, 79, 108, 0.4);
+        }
+        
+        .pledge-box {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 2px solid var(--warning-orange);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .pledge-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: #92400E;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pledge-text {
+            color: #78350F;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .pledge-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: #78350F;
+        }
+        
+        .pledge-checkbox input {
+            margin-top: 0.25rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #10B981;
+        }
+        
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #EF4444;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .type-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">
+            <span>←</span>
+            <span>العودة للصفحة الرئيسية</span>
+        </a>
+        
+        <div class="register-card">
+            <div class="card-header">
+                <h1>إنشاء حساب جديد</h1>
+                <p>انضم إلى منصة نبض اليمن برو</p>
+            </div>
+            
+            <!-- Type Selector -->
+            <div class="type-selector">
+                <div class="type-option active" data-type="doctor">
+                    <div class="type-icon">👨‍⚕️</div>
+                    <div class="type-title">باحث عن عمل</div>
+                    <div class="type-desc">طبيب، ممرض، فني</div>
+                </div>
+                <div class="type-option" data-type="employer">
+                    <div class="type-icon">🏥</div>
+                    <div class="type-title">منشأة طبية</div>
+                    <div class="type-desc">مستشفى، عيادة، مركز</div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div id="alert-container"></div>
+                
+                <!-- Doctor Form -->
+                <form id="doctorForm" class="registration-form">
+                    <div class="form-section">
+                        <h2 class="section-title">البيانات الشخصية</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>الاسم الكامل <span class="required">*</span></label>
+                                <input type="text" name="fullName" required placeholder="أدخل اسمك الكامل">
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الجوال <span class="required">*</span></label>
+                                <input type="tel" name="phone" required placeholder="مثال: 777123456">
+                            </div>
+                            <div class="form-group">
+                                <label>البريد الإلكتروني <span class="required">*</span></label>
+                                <input type="email" name="email" required placeholder="example@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور <span class="required">*</span></label>
+                                <input type="password" name="password" required placeholder="كلمة مرور قوية">
+                            </div>
+                            <div class="form-group">
+                                <label>محافظة الإقامة <span class="required">*</span></label>
+                                <select name="governorate" required>
+                                    <option value="">اختر المحافظة</option>
+                                    <option value="صنعاء">صنعاء</option>
+                                    <option value="عدن">عدن</option>
+                                    <option value="تعز">تعز</option>
+                                    <option value="الحديدة">الحديدة</option>
+                                    <option value="إب">إب</option>
+                                    <option value="ذمار">ذمار</option>
+                                    <option value="حضرموت">حضرموت</option>
+                                    <option value="المحويت">المحويت</option>
+                                    <option value="صعدة">صعدة</option>
+                                    <option value="عمران">عمران</option>
+                                    <option value="البيضاء">البيضاء</option>
+                                    <option value="الجوف">الجوف</option>
+                                    <option value="مأرب">مأرب</option>
+                                    <option value="لحج">لحج</option>
+                                    <option value="أبين">أبين</option>
+                                    <option value="شبوة">شبوة</option>
+                                    <option value="المهرة">المهرة</option>
+                                    <option value="حجة">حجة</option>
+                                    <option value="ريمة">ريمة</option>
+                                    <option value="الضالع">الضالع</option>
+                                    <option value="سقطرى">سقطرى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المديرية (اختياري)</label>
+                                <input type="text" name="district" placeholder="أدخل اسم المديرية">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title">الملف المهني</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>المسمى الوظيفي <span class="required">*</span></label>
+                                <select name="jobTitle" required>
+                                    <option value="">اختر المسمى</option>
+                                    <option value="طبيب">طبيب</option>
+                                    <option value="ممرض">ممرض</option>
+                                    <option value="صيدلي">صيدلي</option>
+                                    <option value="فني مختبر">فني مختبر</option>
+                                    <option value="فني أشعة">فني أشعة</option>
+                                    <option value="معالج طبيعي">معالج طبيعي</option>
+                                    <option value="قابلة">قابلة</option>
+                                    <option value="مساعد طبيب">مساعد طبيب</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>التخصص الدقيق <span class="required">*</span></label>
+                                <select name="specialty" required>
+                                    <option value="">اختر التخصص</option>
+                                    <option value="طب عام">طب عام</option>
+                                    <option value="باطنية">باطنية</option>
+                                    <option value="جراحة عامة">جراحة عامة</option>
+                                    <option value="أطفال">أطفال</option>
+                                    <option value="نساء وولادة">نساء وولادة</option>
+                                    <option value="قلب وأوعية">قلب وأوعية</option>
+                                    <option value="طوارئ">طوارئ</option>
+                                    <option value="عظام">عظام</option>
+                                    <option value="جلدية">جلدية</option>
+                                    <option value="عيون">عيون</option>
+                                    <option value="أنف وأذن وحنجرة">أنف وأذن وحنجرة</option>
+                                    <option value="أسنان">أسنان</option>
+                                    <option value="نفسية">نفسية</option>
+                                    <option value="مسالك بولية">مسالك بولية</option>
+                                    <option value="أشعة">أشعة</option>
+                                    <option value="تخدير">تخدير</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المؤهل العلمي <span class="required">*</span></label>
+                                <select name="qualification" required>
+                                    <option value="">اختر المؤهل</option>
+                                    <option value="دبلوم">دبلوم</option>
+                                    <option value="بكالوريوس">بكالوريوس</option>
+                                    <option value="ماجستير">ماجستير</option>
+                                    <option value="دكتوراه">دكتوراه</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>سنوات الخبرة <span class="required">*</span></label>
+                                <input type="number" name="experience" required min="0" max="50" placeholder="مثال: 5">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>الشهادات المهنية العليا</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="certificates" value="بورد عربي" id="arab-board">
+                                    <label for="arab-board">بورد عربي</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="certificates" value="بورد يمني" id="yemen-board">
+                                    <label for="yemen-board">بورد يمني</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="certificates" value="زمالة" id="fellowship">
+                                    <label for="fellowship">زمالة</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>رخصة مزاولة المهنة <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="license" value="yes" id="license-yes" required>
+                                    <label for="license-yes">نعم</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="license" value="no" id="license-no" required>
+                                    <label for="license-no">لا</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title">التفضيلات</h2>
+                        <div class="form-group">
+                            <label>نوع الدوام المفضل <span class="required">*</span></label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="workType" value="عقود" id="contract">
+                                    <label for="contract">عقود دائمة</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="workType" value="مناوبات" id="shifts">
+                                    <label for="shifts">مناوبات</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>الاستعداد للانتقال <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="relocation" value="no" id="relocation-no" required>
+                                    <label for="relocation-no">لا (محافظتي فقط)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="relocation" value="yes" id="relocation-yes" required>
+                                    <label for="relocation-yes">نعم (مستعد للانتقال)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="location-preferences" id="locationPreferences">
+                                <label>المحافظات المفضلة للعمل بها</label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" name="preferredGovernorates" value="all" id="all-gov">
+                                        <label for="all-gov">جميع المحافظات</label>
+                                    </div>
+                                </div>
+                                <div class="checkbox-group" id="governoratesList">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pledge-box">
+                        <div class="pledge-title">
+                            <span>⚖️</span>
+                            <span>التعهد والالتزام</span>
+                        </div>
+                        <p class="pledge-text">
+                            أقرّ بأنني عند التقديم لأي وظيفة عبر منصة نبض اليمن برو، وفي حال تم توظيفي 
+                            ألتزم بدفع عمولة المنصة (5% من راتب الشهر الأول للوظائف الدائمة، أو النسبة المحددة 
+                            للمناوبات) وتكون في ذمتي أمام الله.
+                        </p>
+                        <div class="pledge-checkbox">
+                            <input type="checkbox" id="pledgeDoctor" required>
+                            <label for="pledgeDoctor">أوافق على الشروط والأحكام والتعهد المذكور أعلاه</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span>إنشاء الحساب</span>
+                        <span>✓</span>
+                    </button>
+                </form>
+                
+                <!-- Employer Form -->
+                <form id="employerForm" class="registration-form hidden">
+                    <div class="form-section">
+                        <h2 class="section-title">بيانات المنشأة</h2>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>اسم المنشأة الطبية <span class="required">*</span></label>
+                                <input type="text" name="facilityName" required placeholder="مثال: مستشفى الأمل">
+                            </div>
+                            <div class="form-group">
+                                <label>نوع المنشأة <span class="required">*</span></label>
+                                <select name="facilityType" required>
+                                    <option value="">اختر النوع</option>
+                                    <option value="مستشفى حكومي">مستشفى حكومي</option>
+                                    <option value="مستشفى خاص">مستشفى خاص</option>
+                                    <option value="عيادة">عيادة</option>
+                                    <option value="مركز طبي">مركز طبي</option>
+                                    <option value="مختبر">مختبر</option>
+                                    <option value="صيدلية">صيدلية</option>
+                                    <option value="مركز أشعة">مركز أشعة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المحافظة <span class="required">*</span></label>
+                                <select name="governorate" required>
+                                    <option value="">اختر المحافظة</option>
+                                    <option value="صنعاء">صنعاء</option>
+                                    <option value="عدن">عدن</option>
+                                    <option value="تعز">تعز</option>
+                                    <option value="الحديدة">الحديدة</option>
+                                    <option value="إب">إب</option>
+                                    <option value="ذمار">ذمار</option>
+                                    <option value="حضرموت">حضرموت</option>
+                                    <option value="المحويت">المحويت</option>
+                                    <option value="صعدة">صعدة</option>
+                                    <option value="عمران">عمران</option>
+                                    <option value="البيضاء">البيضاء</option>
+                                    <option value="الجوف">الجوف</option>
+                                    <option value="مأرب">مأرب</option>
+                                    <option value="لحج">لحج</option>
+                                    <option value="أبين">أبين</option>
+                                    <option value="شبوة">شبوة</option>
+                                    <option value="المهرة">المهرة</option>
+                                    <option value="حجة">حجة</option>
+                                    <option value="ريمة">ريمة</option>
+                                    <option value="الضالع">الضالع</option>
+                                    <option value="سقطرى">سقطرى</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>العنوان التفصيلي <span class="required">*</span></label>
+                                <input type="text" name="address" required placeholder="الشارع، الحي">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h2 class="section-title">بيانات المسؤول</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>اسم المسؤول <span class="required">*</span></label>
+                                <input type="text" name="contactName" required placeholder="اسم مدير الموارد البشرية">
+                            </div>
+                            <div class="form-group">
+                                <label>المنصب <span class="required">*</span></label>
+                                <input type="text" name="position" required placeholder="مثال: مدير الموارد البشرية">
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الجوال <span class="required">*</span></label>
+                                <input type="tel" name="phone" required placeholder="مثال: 777123456">
+                            </div>
+                            <div class="form-group">
+                                <label>البريد الإلكتروني <span class="required">*</span></label>
+                                <input type="email" name="email" required placeholder="example@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور <span class="required">*</span></label>
+                                <input type="password" name="password" required placeholder="كلمة مرور قوية">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pledge-box">
+                        <div class="pledge-title">
+                            <span>⚖️</span>
+                            <span>التعهد والالتزام</span>
+                        </div>
+                        <p class="pledge-text">
+                            نتعهد بدفع عمولة المنصة (5% من راتب الشهر الأول) عند توظيف أي كادر طبي 
+                            تم الوصول إليه عبر منصة نبض اليمن برو، والالتزام بسياسات المنصة.
+                        </p>
+                        <div class="pledge-checkbox">
+                            <input type="checkbox" id="pledgeEmployer" required>
+                            <label for="pledgeEmployer">أوافق على الشروط والأحكام والتعهد المذكور أعلاه</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span>إنشاء الحساب</span>
+                        <span>✓</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Type selector functionality
+        const typeOptions = document.querySelectorAll('.type-option');
+        const doctorForm = document.getElementById('doctorForm');
+        const employerForm = document.getElementById('employerForm');
+        
+        // Check URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const typeParam = urlParams.get('type');
+        
+        if (typeParam === 'employer') {
+            showEmployerForm();
+        }
+        
+        typeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                const type = option.dataset.type;
+                if (type === 'doctor') {
+                    showDoctorForm();
+                } else {
+                    showEmployerForm();
+                }
+            });
+        });
+        
+        function showDoctorForm() {
+            doctorForm.classList.remove('hidden');
+            employerForm.classList.add('hidden');
+            typeOptions[0].classList.add('active');
+            typeOptions[1].classList.remove('active');
+        }
+        
+        function showEmployerForm() {
+            employerForm.classList.remove('hidden');
+            doctorForm.classList.add('hidden');
+            typeOptions[1].classList.add('active');
+            typeOptions[0].classList.remove('active');
+        }
+        
+        // Relocation preferences
+        const relocationYes = document.getElementById('relocation-yes');
+        const relocationNo = document.getElementById('relocation-no');
+        const locationPreferences = document.getElementById('locationPreferences');
+        
+        relocationYes.addEventListener('change', () => {
+            if (relocationYes.checked) {
+                locationPreferences.classList.add('show');
+                populateGovernorates();
+            }
+        });
+        
+        relocationNo.addEventListener('change', () => {
+            if (relocationNo.checked) {
+                locationPreferences.classList.remove('show');
+            }
+        });
+        
+        function populateGovernorates() {
+            const governorates = [
+                'صنعاء', 'عدن', 'تعز', 'الحديدة', 'إب', 'ذمار', 'حضرموت',
+                'المحويت', 'صعدة', 'عمران', 'البيضاء', 'الجوف', 'مأرب',
+                'لحج', 'أبين', 'شبوة', 'المهرة', 'حجة', 'ريمة', 'الضالع', 'سقطرى'
+            ];
+            
+            const list = document.getElementById('governoratesList');
+            list.innerHTML = governorates.map((gov, index) => `
+                <div class="checkbox-item">
+                    <input type="checkbox" name="preferredGovernorates" value="${gov}" id="gov-${index}">
+                    <label for="gov-${index}">${gov}</label>
+                </div>
+            `).join('');
+            
+            // Select all functionality
+            const selectAll = document.getElementById('all-gov');
+            selectAll.addEventListener('change', () => {
+                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            });
+        }
+        
+        // Form submissions
+        doctorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                type: 'doctor',
+                fullName: formData.get('fullName'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                governorate: formData.get('governorate'),
+                district: formData.get('district'),
+                jobTitle: formData.get('jobTitle'),
+                specialty: formData.get('specialty'),
+                qualification: formData.get('qualification'),
+                experience: formData.get('experience'),
+                certificates: formData.getAll('certificates'),
+                license: formData.get('license'),
+                workType: formData.getAll('workType'),
+                relocation: formData.get('relocation'),
+                preferredGovernorates: formData.getAll('preferredGovernorates')
+            };
+            
+            console.log('Doctor Registration Data:', data);
+            showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard-doctor.html';
+            }, 2000);
+        });
+        
+        employerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                type: 'employer',
+                facilityName: formData.get('facilityName'),
+                facilityType: formData.get('facilityType'),
+                governorate: formData.get('governorate'),
+                address: formData.get('address'),
+                contactName: formData.get('contactName'),
+                position: formData.get('position'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+            
+            console.log('Employer Registration Data:', data);
+            showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard-employer.html';
+            }, 2000);
+        });
+        
+        function showAlert(type, message) {
+            const container = document.getElementById('alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

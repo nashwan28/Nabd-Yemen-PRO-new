@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B4F6C">
+    <title>لوحة تحكم الإدارة - نبض اليمن برو</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            --primary-blue: #0B4F6C;
+            --secondary-blue: #1E88A8;
+            --accent-cyan: #00B4D8;
+            --light-cyan: #90E0EF;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFB;
+            --text-dark: #1A1A2E;
+            --text-gray: #6C757D;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --error-red: #EF4444;
+            --border-color: #E5E7EB;
+            --font-display: 'Cairo', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #1A1A2E 0%, var(--primary-blue) 100%);
+            color: var(--bg-white);
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-info h1 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.25rem;
+        }
+        
+        .admin-info p {
+            opacity: 0.9;
+        }
+        
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-cyan);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .icon-users {
+            background: linear-gradient(135deg, #6366F1, #818CF8);
+        }
+        
+        .icon-jobs {
+            background: linear-gradient(135deg, #10B981, #34D399);
+        }
+        
+        .icon-money {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+        }
+        
+        .icon-matches {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+        }
+        
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+        
+        .stat-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .change-positive {
+            color: var(--success-green);
+        }
+        
+        .change-negative {
+            color: var(--error-red);
+        }
+        
+        /* Tabs */
+        .tabs {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-gray);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--bg-white);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Commission Tracking Table */
+        .tracking-section {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-item label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .filter-item select {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            min-width: 150px;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, var(--bg-light), #E0F2FE);
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: right;
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .status-followup {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .status-hired {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status-collected {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+        }
+        
+        .status-failed {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+        
+        .alert-flag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--error-red), #F87171);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-contact {
+            background: var(--accent-cyan);
+            color: white;
+        }
+        
+        .btn-update {
+            background: var(--success-green);
+            color: white;
+        }
+        
+        .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Users Management */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .user-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .user-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-3px);
+        }
+        
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .user-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        .user-type {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        .user-info {
+            margin: 1rem 0;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+            }
+            
+            .filter-item select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="admin-info">
+                <h1>⚡ لوحة تحكم الإدارة</h1>
+                <p>نبض اليمن برو - نظام إدارة المنصة</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button style="background: rgba(255,255,255,0.15); border: none; padding: 0.75rem; border-radius: 8px; color: white; cursor: pointer;">🔔</button>
+                <button style="background: rgba(255,255,255,0.15); border: none; padding: 0.75rem; border-radius: 8px; color: white; cursor: pointer;">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">847</div>
+                        <div class="stat-label">إجمالي المستخدمين</div>
+                    </div>
+                    <div class="stat-icon icon-users">👥</div>
+                </div>
+                <div class="stat-change change-positive">↗ +23 هذا الأسبوع</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">الوظائف النشطة</div>
+                    </div>
+                    <div class="stat-icon icon-jobs">💼</div>
+                </div>
+                <div class="stat-change change-positive">↗ +12 اليوم</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">عمليات قيد المتابعة</div>
+                    </div>
+                    <div class="stat-icon icon-money">💰</div>
+                </div>
+                <div class="stat-change change-negative">⚠️ 8 تحتاج متابعة فورية</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">إجمالي المطابقات</div>
+                    </div>
+                    <div class="stat-icon icon-matches">🎯</div>
+                </div>
+                <div class="stat-change change-positive">↗ +67 اليوم</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('commission')">💰 متابعة العمولات</button>
+            <button class="tab" onclick="switchTab('users')">👥 إدارة المستخدمين</button>
+            <button class="tab" onclick="switchTab('jobs')">💼 إدارة الوظائف</button>
+            <button class="tab" onclick="switchTab('reports')">📊 التقارير</button>
+        </div>
+
+        <!-- Commission Tracking Tab -->
+        <div id="commission" class="tab-content active">
+            <div class="tracking-section">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 نظام متابعة العمولات والتحصيل</h2>
+                    <div class="filter-bar">
+                        <div class="filter-item">
+                            <label>الحالة</label>
+                            <select id="statusFilter">
+                                <option value="">جميع الحالات</option>
+                                <option value="pending">انتظار</option>
+                                <option value="followup">تحتاج متابعة</option>
+                                <option value="hired">تم التوظيف</option>
+                                <option value="collected">تم التحصيل</option>
+                                <option value="failed">لم يتم الاتفاق</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>الفترة</label>
+                            <select>
+                                <option>آخر 7 أيام</option>
+                                <option>آخر 30 يوم</option>
+                                <option>آخر 90 يوم</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>رقم العملية</th>
+                                <th>التاريخ</th>
+                                <th>الطبيب</th>
+                                <th>المنشأة</th>
+                                <th>الوظيفة</th>
+                                <th>الراتب المتوقع</th>
+                                <th>العمولة (5%)</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- High Priority - Needs Follow-up -->
+                            <tr style="background: #FEE2E2;">
+                                <td><strong>#COM-2024-045</strong></td>
+                                <td>
+                                    2024-01-28<br>
+                                    <span class="alert-flag">🔥 منذ 10 أيام</span>
+                                </td>
+                                <td>
+                                    د. أحمد محمد<br>
+                                    <small style="color: var(--text-gray);">777123456</small>
+                                </td>
+                                <td>
+                                    مستشفى الأمل<br>
+                                    <small style="color: var(--text-gray);">صنعاء</small>
+                                </td>
+                                <td>أخصائي باطنية</td>
+                                <td>250,000 ريال</td>
+                                <td><strong style="color: var(--warning-orange);">12,500 ريال</strong></td>
+                                <td><span class="status-badge status-followup">⚠️ تحتاج متابعة فورية</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm btn-contact" onclick="contactParty('COM-2024-045')">📞 اتصال</button>
+                                        <button class="btn-sm btn-update" onclick="updateStatus('COM-2024-045')">✏️ تحديث</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Recent - Pending -->
+                            <tr>
+                                <td><strong>#COM-2024-044</strong></td>
+                                <td>
+                                    2024-02-05<br>
+                                    <small style="color: var(--text-gray);">منذ يومين</small>
+                                </td>
+                                <td>
+                                    د. سارة علي<br>
+                                    <small style="color: var(--text-gray);">773456789</small>
+                                </td>
+                                <td>
+                                    مستشفى السلام<br>
+                                    <small style="color: var(--text-gray);">عدن</small>
+                                </td>
+                                <td>طبيب طوارئ</td>
+                                <td>200,000 ريال</td>
+                                <td><strong style="color: var(--success-green);">10,000 ريال</strong></td>
+                                <td><span class="status-badge status-pending">⏳ قيد الانتظار</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm btn-contact" onclick="contactParty('COM-2024-044')">📞 اتصال</button>
+                                        <button class="btn-sm btn-update" onclick="updateStatus('COM-2024-044')">✏️ تحديث</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Hired - Awaiting Payment -->
+                            <tr style="background: #D1FAE5;">
+                                <td><strong>#COM-2024-043</strong></td>
+                                <td>
+                                    2024-02-01<br>
+                                    <small style="color: var(--text-gray);">منذ 6 أيام</small>
+                                </td>
+                                <td>
+                                    د. خالد حسن<br>
+                                    <small style="color: var(--text-gray);">771234567</small>
+                                </td>
+                                <td>
+                                    مستشفى الثورة<br>
+                                    <small style="color: var(--text-gray);">تعز</small>
+                                </td>
+                                <td>جراحة عامة</td>
+                                <td>300,000 ريال</td>
+                                <td><strong style="color: var(--success-green);">15,000 ريال</strong></td>
+                                <td><span class="status-badge status-hired">✅ تم التوظيف - في انتظار الدفع</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm btn-contact" onclick="contactParty('COM-2024-043')">📞 اتصال</button>
+                                        <button class="btn-sm btn-update" onclick="updateStatus('COM-2024-043')">✏️ تحديث</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Collected Successfully -->
+                            <tr>
+                                <td><strong>#COM-2024-042</strong></td>
+                                <td>
+                                    2024-01-25<br>
+                                    <small style="color: var(--text-gray);">منذ 13 يوم</small>
+                                </td>
+                                <td>
+                                    د. فاطمة أحمد<br>
+                                    <small style="color: var(--text-gray);">774567890</small>
+                                </td>
+                                <td>
+                                    مركز الشفاء<br>
+                                    <small style="color: var(--text-gray);">صنعاء</small>
+                                </td>
+                                <td>نساء وولادة</td>
+                                <td>280,000 ريال</td>
+                                <td><strong style="color: var(--success-green);">14,000 ريال</strong></td>
+                                <td><span class="status-badge status-collected">💰 تم التحصيل بنجاح</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm" style="background: #E5E7EB; color: var(--text-gray);" disabled>✓ مكتمل</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Failed - No Agreement -->
+                            <tr>
+                                <td><strong>#COM-2024-041</strong></td>
+                                <td>
+                                    2024-01-20<br>
+                                    <small style="color: var(--text-gray);">منذ 18 يوم</small>
+                                </td>
+                                <td>
+                                    د. محمد سالم<br>
+                                    <small style="color: var(--text-gray);">775678901</small>
+                                </td>
+                                <td>
+                                    عيادة النور<br>
+                                    <small style="color: var(--text-gray);">الحديدة</small>
+                                </td>
+                                <td>أطفال</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="status-badge status-failed">❌ لم يتم الاتفاق</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm" style="background: #E5E7EB; color: var(--text-gray);" disabled>مغلق</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Urgent Follow-up -->
+                            <tr style="background: #FEF3C7;">
+                                <td><strong>#COM-2024-040</strong></td>
+                                <td>
+                                    2024-01-30<br>
+                                    <span class="alert-flag">⚠️ منذ 8 أيام</span>
+                                </td>
+                                <td>
+                                    د. عبدالله يحيى<br>
+                                    <small style="color: var(--text-gray);">776789012</small>
+                                </td>
+                                <td>
+                                    مستشفى الجامعة<br>
+                                    <small style="color: var(--text-gray);">إب</small>
+                                </td>
+                                <td>قلب وأوعية</td>
+                                <td>350,000 ريال</td>
+                                <td><strong style="color: var(--warning-orange);">17,500 ريال</strong></td>
+                                <td><span class="status-badge status-followup">⚠️ تحتاج متابعة</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-sm btn-contact" onclick="contactParty('COM-2024-040')">📞 اتصال</button>
+                                        <button class="btn-sm btn-update" onclick="updateStatus('COM-2024-040')">✏️ تحديث</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Footer -->
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <div style="color: var(--text-gray); margin-bottom: 0.25rem;">إجمالي العمليات النشطة</div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">45</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-gray); margin-bottom: 0.25rem;">العمولات المتوقعة</div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--success-green);">589,500 ريال</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-gray); margin-bottom: 0.25rem;">تم التحصيل</div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--success-green);">243,000 ريال</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-gray); margin-bottom: 0.25rem;">تحتاج متابعة فورية</div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--error-red);">8</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users" class="tab-content">
+            <div class="tracking-section">
+                <h2 class="section-title">👥 إدارة المستخدمين</h2>
+                <p style="color: var(--text-gray); margin-top: 1rem;">قريباً...</p>
+            </div>
+        </div>
+
+        <!-- Jobs Tab -->
+        <div id="jobs" class="tab-content">
+            <div class="tracking-section">
+                <h2 class="section-title">💼 إدارة الوظائف</h2>
+                <p style="color: var(--text-gray); margin-top: 1rem;">قريباً...</p>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="tracking-section">
+                <h2 class="section-title">📊 التقارير والإحصائيات</h2>
+                <p style="color: var(--text-gray); margin-top: 1rem;">قريباً...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function contactParty(commissionId) {
+            alert(`اتصال بأطراف العملية: ${commissionId}\n\nسيتم فتح نافذة الاتصال...`);
+            // In real implementation, open contact modal or initiate call
+        }
+
+        function updateStatus(commissionId) {
+            const newStatus = prompt(
+                `تحديث حالة العملية: ${commissionId}\n\n` +
+                `الحالات المتاحة:\n` +
+                `1 - تم التوظيف\n` +
+                `2 - تم التحصيل\n` +
+                `3 - لم يتم الاتفاق\n\n` +
+                `أدخل رقم الحالة الجديدة:`
+            );
+            
+            if (newStatus) {
+                const statuses = {
+                    '1': 'تم التوظيف',
+                    '2': 'تم التحصيل',
+                    '3': 'لم يتم الاتفاق'
+                };
+                
+                alert(`✓ تم تحديث الحالة إلى: ${statuses[newStatus] || 'غير معروف'}`);
+                // In real implementation, update database and refresh table
+            }
+        }
+
+        // Filter functionality
+        document.getElementById('statusFilter')?.addEventListener('change', (e) => {
+            console.log('Filter by status:', e.target.value);
+            // In real implementation, filter table rows
+        });
+    </script>
+</body>
+</html>
