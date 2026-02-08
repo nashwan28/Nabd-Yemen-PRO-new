@@ -398,6 +398,9 @@
                             <div class="form-group">
                                 <label>كلمة المرور <span class="required">*</span></label>
                                 <input type="password" name="password" required placeholder="كلمة مرور قوية">
+                                <small style="color: #6C757D; font-size: 0.85rem; margin-top: 4px; display: block;">
+                                    يجب أن تحتوي على 6 أحرف على الأقل: حرف صغير، حرف كبير، ورقم
+                                </small>
                             </div>
                             <div class="form-group">
                                 <label>محافظة الإقامة <span class="required">*</span></label>
@@ -454,32 +457,27 @@
                                 <label>التخصص الدقيق <span class="required">*</span></label>
                                 <select name="specialty" required>
                                     <option value="">اختر التخصص</option>
-                                    <option value="طب عام">طب عام</option>
-                                    <option value="باطنية">باطنية</option>
-                                    <option value="جراحة عامة">جراحة عامة</option>
-                                    <option value="أطفال">أطفال</option>
-                                    <option value="نساء وولادة">نساء وولادة</option>
-                                    <option value="قلب وأوعية">قلب وأوعية</option>
-                                    <option value="طوارئ">طوارئ</option>
-                                    <option value="عظام">عظام</option>
-                                    <option value="جلدية">جلدية</option>
-                                    <option value="عيون">عيون</option>
-                                    <option value="أنف وأذن وحنجرة">أنف وأذن وحنجرة</option>
-                                    <option value="أسنان">أسنان</option>
-                                    <option value="نفسية">نفسية</option>
-                                    <option value="مسالك بولية">مسالك بولية</option>
-                                    <option value="أشعة">أشعة</option>
-                                    <option value="تخدير">تخدير</option>
+                                    <option value="general-practitioner">طب عام</option>
+                                    <option value="internal-medicine">باطنية</option>
+                                    <option value="surgeon">جراحة عامة</option>
+                                    <option value="pediatrician">أطفال</option>
+                                    <option value="gynecologist">نساء وولادة</option>
+                                    <option value="cardiologist">قلب وأوعية</option>
+                                    <option value="emergency-medicine">طوارئ</option>
+                                    <option value="orthopedic">عظام</option>
+                                    <option value="dermatologist">جلدية</option>
+                                    <option value="other">أخرى</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>المؤهل العلمي <span class="required">*</span></label>
                                 <select name="qualification" required>
                                     <option value="">اختر المؤهل</option>
-                                    <option value="دبلوم">دبلوم</option>
-                                    <option value="بكالوريوس">بكالوريوس</option>
-                                    <option value="ماجستير">ماجستير</option>
-                                    <option value="دكتوراه">دكتوراه</option>
+                                    <option value="diploma">دبلوم</option>
+                                    <option value="bachelor">بكالوريوس</option>
+                                    <option value="master">ماجستير</option>
+                                    <option value="phd">دكتوراه</option>
+                                    <option value="fellowship">زمالة</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -665,6 +663,9 @@
                             <div class="form-group">
                                 <label>كلمة المرور <span class="required">*</span></label>
                                 <input type="password" name="password" required placeholder="كلمة مرور قوية">
+                                <small style="color: #6C757D; font-size: 0.85rem; margin-top: 4px; display: block;">
+                                    يجب أن تحتوي على 6 أحرف على الأقل: حرف صغير، حرف كبير، ورقم
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -693,6 +694,7 @@
         </div>
     </div>
 
+    <script src="api-client.js"></script>
     <script>
         // Type selector functionality
         const typeOptions = document.querySelectorAll('.type-option');
@@ -740,18 +742,22 @@
         const relocationNo = document.getElementById('relocation-no');
         const locationPreferences = document.getElementById('locationPreferences');
         
-        relocationYes.addEventListener('change', () => {
-            if (relocationYes.checked) {
-                locationPreferences.classList.add('show');
-                populateGovernorates();
-            }
-        });
+        if (relocationYes) {
+            relocationYes.addEventListener('change', () => {
+                if (relocationYes.checked) {
+                    locationPreferences.classList.add('show');
+                    populateGovernorates();
+                }
+            });
+        }
         
-        relocationNo.addEventListener('change', () => {
-            if (relocationNo.checked) {
-                locationPreferences.classList.remove('show');
-            }
-        });
+        if (relocationNo) {
+            relocationNo.addEventListener('change', () => {
+                if (relocationNo.checked) {
+                    locationPreferences.classList.remove('show');
+                }
+            });
+        }
         
         function populateGovernorates() {
             const governorates = [
@@ -761,6 +767,8 @@
             ];
             
             const list = document.getElementById('governoratesList');
+            if (!list) return;
+            
             list.innerHTML = governorates.map((gov, index) => `
                 <div class="checkbox-item">
                     <input type="checkbox" name="preferredGovernorates" value="${gov}" id="gov-${index}">
@@ -770,67 +778,160 @@
             
             // Select all functionality
             const selectAll = document.getElementById('all-gov');
-            selectAll.addEventListener('change', () => {
-                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
-                checkboxes.forEach(cb => cb.checked = selectAll.checked);
-            });
+            if (selectAll) {
+                selectAll.addEventListener('change', () => {
+                    const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                });
+            }
         }
         
         // Form submissions
+        console.log('Setting up form event listeners...');
+        console.log('doctorForm found:', !!doctorForm);
+        console.log('employerForm found:', !!employerForm);
+        
+        // Add debugging to submit buttons
+        const doctorSubmitBtn = doctorForm.querySelector('button[type="submit"]');
+        const employerSubmitBtn = employerForm.querySelector('button[type="submit"]');
+        
+        console.log('Doctor submit button found:', !!doctorSubmitBtn);
+        console.log('Employer submit button found:', !!employerSubmitBtn);
+        
+        if (doctorSubmitBtn) {
+            doctorSubmitBtn.addEventListener('click', () => {
+                console.log('Doctor submit button clicked!');
+            });
+        }
+        
+        if (employerSubmitBtn) {
+            employerSubmitBtn.addEventListener('click', () => {
+                console.log('Employer submit button clicked!');
+            });
+        }
+        
         doctorForm.addEventListener('submit', async (e) => {
+            console.log('Doctor form submitted!');
+            
+            const pledgeCheckbox = document.getElementById('pledgeDoctor');
+            console.log('Pledge checkbox found:', !!pledgeCheckbox);
+            console.log('Pledge checkbox checked:', pledgeCheckbox ? pledgeCheckbox.checked : 'N/A');
+            
+            // Check form validity before preventing default
+            const isFormValid = e.target.checkValidity();
+            console.log('Doctor form is valid:', isFormValid);
+            
+            if (!isFormValid) {
+                console.log('Form is invalid, showing validation errors');
+                // Let the browser show validation messages
+                return;
+            }
+            
             e.preventDefault();
             
             const formData = new FormData(e.target);
+            const fullName = formData.get('fullName').split(' ');
+            const firstName = fullName[0];
+            const lastName = fullName.slice(1).join(' ') || '';
+
             const data = {
-                type: 'doctor',
-                fullName: formData.get('fullName'),
-                phone: formData.get('phone'),
+                firstName,
+                lastName,
                 email: formData.get('email'),
                 password: formData.get('password'),
-                governorate: formData.get('governorate'),
-                district: formData.get('district'),
-                jobTitle: formData.get('jobTitle'),
-                specialty: formData.get('specialty'),
-                qualification: formData.get('qualification'),
-                experience: formData.get('experience'),
-                certificates: formData.getAll('certificates'),
-                license: formData.get('license'),
-                workType: formData.getAll('workType'),
-                relocation: formData.get('relocation'),
-                preferredGovernorates: formData.getAll('preferredGovernorates')
+                userType: 'doctor',
+                phone: formData.get('phone'),
+                specialization: formData.get('specialty'),
+                highestDegree: formData.get('qualification'),
+                yearsOfExperience: parseInt(formData.get('experience')),
+                commissionAgreement: pledgeCheckbox ? pledgeCheckbox.checked : false
             };
             
-            console.log('Doctor Registration Data:', data);
-            showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+            console.log('Sending registration data:', data);
             
-            setTimeout(() => {
-                window.location.href = 'dashboard-doctor.html';
-            }, 2000);
+            try {
+                showAlert('success', 'جاري إنشاء الحساب...');
+                const response = await nabdAPI.register(data);
+                console.log('Registration response:', response);
+                
+                if (response.success) {
+                    showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard-doctor.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                console.error('Error name:', error.name);
+                console.error('Error message:', error.message);
+                console.error('Error errors:', error.errors);
+                // Show detailed validation errors if available
+                let errorMessage = error.message || 'فشل التسجيل. تأكد من البيانات.';
+                if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+                    errorMessage = error.errors.map(e => e.msg || e.message).join('<br>');
+                }
+                showAlert('error', errorMessage);
+            }
         });
         
         employerForm.addEventListener('submit', async (e) => {
+            console.log('Employer form submitted!');
+            
+            const pledgeCheckbox = document.getElementById('pledgeEmployer');
+            console.log('Employer pledge checkbox found:', !!pledgeCheckbox);
+            console.log('Employer pledge checkbox checked:', pledgeCheckbox ? pledgeCheckbox.checked : 'N/A');
+            
+            // Check form validity before preventing default
+            const isFormValid = e.target.checkValidity();
+            console.log('Employer form is valid:', isFormValid);
+            
+            if (!isFormValid) {
+                console.log('Employer form is invalid, showing validation errors');
+                // Let the browser show validation messages
+                return;
+            }
+            
             e.preventDefault();
             
             const formData = new FormData(e.target);
+            const contactName = formData.get('contactName').split(' ');
+            const firstName = contactName[0];
+            const lastName = contactName.slice(1).join(' ') || '';
+
             const data = {
-                type: 'employer',
-                facilityName: formData.get('facilityName'),
-                facilityType: formData.get('facilityType'),
-                governorate: formData.get('governorate'),
-                address: formData.get('address'),
-                contactName: formData.get('contactName'),
-                position: formData.get('position'),
-                phone: formData.get('phone'),
+                firstName,
+                lastName,
                 email: formData.get('email'),
-                password: formData.get('password')
+                password: formData.get('password'),
+                userType: 'employer',
+                phone: formData.get('phone'),
+                organizationName: formData.get('facilityName'),
+                organizationType: formData.get('facilityType'),
+                commissionAgreement: pledgeCheckbox ? pledgeCheckbox.checked : false
             };
             
-            console.log('Employer Registration Data:', data);
-            showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+            console.log('Sending employer registration data:', data);
             
-            setTimeout(() => {
-                window.location.href = 'dashboard-employer.html';
-            }, 2000);
+            try {
+                showAlert('success', 'جاري إنشاء الحساب...');
+                const response = await nabdAPI.register(data);
+                console.log('Employer registration response:', response);
+                
+                if (response.success) {
+                    showAlert('success', 'تم التسجيل بنجاح! سيتم توجيهك إلى لوحة التحكم...');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard-employer.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Employer registration error:', error);
+                // Show detailed validation errors if available
+                let errorMessage = error.message || 'فشل التسجيل. تأكد من البيانات.';
+                if (error.errors && Array.isArray(error.errors)) {
+                    errorMessage = error.errors.map(e => e.msg || e.message).join('<br>');
+                }
+                showAlert('error', errorMessage);
+            }
         });
         
         function showAlert(type, message) {
@@ -838,9 +939,11 @@
             const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
             container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
             
-            setTimeout(() => {
-                container.innerHTML = '';
-            }, 5000);
+            if (type === 'error') {
+                setTimeout(() => {
+                    container.innerHTML = '';
+                }, 5000);
+            }
         }
     </script>
 </body>

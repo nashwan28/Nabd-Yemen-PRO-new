@@ -438,18 +438,42 @@
     <header class="dashboard-header">
         <div class="header-content">
             <div class="facility-info">
-                <div class="facility-icon">🏥</div>
+                <div class="facility-icon" id="facilityIcon">🏥</div>
                 <div class="facility-details">
-                    <h2>مستشفى الأمل</h2>
-                    <p>مستشفى خاص - صنعاء</p>
+                    <h2 id="facilityName">جاري التحميل...</h2>
+                    <p id="facilityType">...</p>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="btn-icon" style="background: rgba(255,255,255,0.15); border: none; padding: 0.75rem; border-radius: 8px; color: white; cursor: pointer;">🔔</button>
-                <button class="btn-icon" style="background: rgba(255,255,255,0.15); border: none; padding: 0.75rem; border-radius: 8px; color: white; cursor: pointer;">⚙️</button>
+                <button class="btn-icon" id="logoutBtn" title="تسجيل الخروج" style="background: rgba(255,255,255,0.15); border: none; padding: 0.75rem; border-radius: 8px; color: white; cursor: pointer;">�</button>
             </div>
         </div>
     </header>
+
+    <script src="api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!nabdAPI.isAuthenticated() || !nabdAPI.isEmployer()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const user = nabdAPI.getCurrentUser();
+                if (user && user.employerInfo) {
+                    document.getElementById('facilityName').textContent = user.employerInfo.organizationName;
+                    document.getElementById('facilityType').textContent = `${user.employerInfo.organizationType} - ${user.phone}`;
+                }
+
+                document.getElementById('logoutBtn').addEventListener('click', async () => {
+                    await nabdAPI.logout();
+                    window.location.href = 'login.html';
+                });
+            } catch (error) {
+                console.error('Error loading employer profile:', error);
+            }
+        });
+    </script>
 
     <!-- Dashboard Container -->
     <div class="dashboard-container">

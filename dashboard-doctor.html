@@ -495,19 +495,179 @@
     <header class="dashboard-header">
         <div class="header-content">
             <div class="user-info">
-                <div class="user-avatar">👨‍⚕️</div>
+                <div class="user-avatar" id="userAvatar">👨‍⚕️</div>
                 <div class="user-details">
-                    <h2>د. أحمد محمد</h2>
-                    <p>أخصائي باطنية - صنعاء</p>
+                    <h2 id="userName">جاري التحميل...</h2>
+                    <p id="userRole">...</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="btn-icon" title="الإشعارات">🔔</button>
                 <button class="btn-icon" title="الإعدادات">⚙️</button>
-                <button class="btn-icon" title="تسجيل الخروج">🚪</button>
+                <button class="btn-icon" title="تسجيل الخروج" id="logoutBtn">🚪</button>
             </div>
         </div>
     </header>
+
+    <script src="api-client.js"></script>
+    <script>
+        // التحقق من تسجيل الدخول عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!nabdAPI.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const user = nabdAPI.getCurrentUser();
+                if (user) {
+                    document.getElementById('userName').textContent = `د. ${user.firstName} ${user.lastName}`;
+                    const specialization = user.doctorInfo ? user.doctorInfo.specialization : 'طبيب';
+                    document.getElementById('userRole').textContent = `${specialization} - ${user.phone}`;
+                }
+
+                // إضافة وظيفة تسجيل الخروج
+                document.getElementById('logoutBtn').addEventListener('click', async () => {
+                    await nabdAPI.logout();
+                    window.location.href = 'login.html';
+                });
+
+                // تحميل الوظائف الحقيقية
+                loadJobs();
+                loadStats();
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        });
+        
+        // Load jobs from API
+        async function loadJobs() {
+            try {
+                const response = await nabdAPI.getJobs();
+                if (response.success && response.data) {
+                    renderJobs(response.data.jobs || []);
+                }
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+            }
+        }
+        
+        // Load statistics from API
+        async function loadStats() {
+            try {
+                const response = await nabdAPI.getJobStatistics();
+                if (response.success && response.data) {
+                    updateStats(response.data);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        // Update statistics display
+        function updateStats(stats) {
+            if (stats.availableJobs !== undefined) {
+                document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = stats.availableJobs;
+            }
+        }
+        
+        // Render jobs to the page
+        function renderJobs(jobs) {
+            const jobsGrid = document.getElementById('jobsGrid');
+            if (!jobs || jobs.length === 0) {
+                jobsGrid.innerHTML = '<p style="text-align: center; padding: 2rem;">لا توجد وظائف متاحة حالياً</p>';
+                return;
+            }
+            
+            const specializationNames = {
+                'general-practitioner': 'طبيب عام',
+                'cardiologist': 'قلب وأوعية',
+                'neurologist': 'أعصاب',
+                'pediatrician': 'أطفال',
+                'surgeon': 'جراحة عامة',
+                'orthopedic': 'عظام',
+                'gynecologist': 'نساء وولادة',
+                'dermatologist': 'جلدية',
+                'psychiatrist': 'نفسية',
+                'radiologist': 'أشعة',
+                'anesthesiologist': 'تخدير',
+                'emergency-medicine': 'طوارئ',
+                'internal-medicine': 'باطنية',
+                'family-medicine': 'طب أسرة',
+                'other': 'أخرى'
+            };
+            
+            const governorateNames = {
+                'sanaa': 'صنعاء',
+                'aden': 'عدن',
+                'taiz': 'تعز',
+                'hadhramaut': 'حضرموت',
+                'ibb': 'إب',
+                'dhamar': 'ذمار',
+                'al-mahrah': 'المهرة',
+                'al-bayda': 'البيضاء',
+                'al-jawf': 'الجوف',
+                'amran': 'عمران',
+                'al-dhale': 'الضالع',
+                'raymah': 'ريمة',
+                'al-hudaydah': 'الحديدة',
+                'lahij': 'لحج',
+                'abyan': 'أبين',
+                'marib': 'مأرب',
+                'socotra': 'سقطرى'
+            };
+            
+            jobsGrid.innerHTML = jobs.map(job => {
+                const spec = specializationNames[job.requirements?.specialization] || job.requirements?.specialization || 'طبيب';
+                const location = governorateNames[job.location?.governorate] || job.location?.governorate || 'غير محدد';
+                const isUrgent = job.isUrgent || job.jobType === 'urgent';
+                
+                return `
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h3 class="job-title">${job.title || spec}</h3>
+                        </div>
+                        <span class="job-type-badge ${isUrgent ? 'badge-urgent' : 'badge-permanent'}">
+                            ${isUrgent ? 'طلب عاجل ⚡' : 'وظيفة دائمة'}
+                        </span>
+                    </div>
+                    
+                    <div class="job-details">
+                        <div class="job-detail">
+                            <span class="job-detail-icon">🏥</span>
+                            <span>${job.employer?.organizationName || 'منشأة طبية'}</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📍</span>
+                            <span>${location}</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">⏱️</span>
+                            <span>${job.schedule?.workType === 'shift' ? 'مناوبات' : 'دوام كامل'}</span>
+                        </div>
+                        <div class="job-detail">
+                            <span class="job-detail-icon">📅</span>
+                            <span>${new Date(job.createdAt).toLocaleDateString('ar-YE')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-salary">💰 ${job.compensation?.salary ? job.compensation.salary + ' ريال' : 'الراتب يحدد بعد المقابلة'}</div>
+                    
+                    <div class="job-actions">
+                        <button class="btn btn-primary" onclick="openApplicationModal('${job._id}')">
+                            <span>تقديم طلب</span>
+                            <span>✓</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewJobDetails('${job._id}')">
+                            <span>التفاصيل</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+    </script>
 
     <!-- Dashboard Container -->
     <div class="dashboard-container">
@@ -545,6 +705,8 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Jobs Section -->
+            <div id="jobs-section" class="content-section">
             <!-- Stats Section -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -750,6 +912,123 @@
                     </div>
                 </div>
             </div>
+            </div>
+            <!-- Jobs Section End -->
+            
+            <!-- Applications Section -->
+            <div id="applications-section" class="content-section" style="display: none;">
+                <h1 class="page-title">طلباتي</h1>
+                <div class="placeholder-content">
+                    <p>قائمة طلبات التقديم على الوظائف ستظهر هنا</p>
+                </div>
+            </div>
+            
+            <!-- Profile Section -->
+            <div id="profile-section" class="content-section" style="display: none;">
+                <h1 class="page-title">الملف الشخصي</h1>
+                
+                <form id="profileForm" class="profile-form">
+                    <!-- البيانات الأساسية -->
+                    <div class="form-section">
+                        <h3>البيانات الأساسية</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>الاسم الأول</label>
+                                <input type="text" name="firstName" id="profileFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>الاسم الأخير</label>
+                                <input type="text" name="lastName" id="profileLastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>البريد الإلكتروني</label>
+                                <input type="email" name="email" id="profileEmail" readonly style="background: #f0f0f0;">
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الجوال</label>
+                                <input type="tel" name="phone" id="profilePhone" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- بيانات الطبيب -->
+                    <div class="form-section" id="doctorProfileSection">
+                        <h3>المعلومات المهنية</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>التخصص</label>
+                                <select name="specialization" id="profileSpecialization">
+                                    <option value="general-practitioner">طبيب عام</option>
+                                    <option value="cardiologist">قلب وأوعية</option>
+                                    <option value="neurologist">أعصاب</option>
+                                    <option value="pediatrician">أطفال</option>
+                                    <option value="surgeon">جراحة عامة</option>
+                                    <option value="orthopedic">عظام</option>
+                                    <option value="gynecologist">نساء وولادة</option>
+                                    <option value="dermatologist">جلدية</option>
+                                    <option value="psychiatrist">نفسية</option>
+                                    <option value="radiologist">أشعة</option>
+                                    <option value="anesthesiologist">تخدير</option>
+                                    <option value="emergency-medicine">طوارئ</option>
+                                    <option value="internal-medicine">باطنية</option>
+                                    <option value="family-medicine">طب أسرة</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>المؤهل العلمي</label>
+                                <select name="highestDegree" id="profileHighestDegree">
+                                    <option value="diploma">دبلوم</option>
+                                    <option value="bachelor">بكالوريوس</option>
+                                    <option value="master">ماجستير</option>
+                                    <option value="phd">دكتوراه</option>
+                                    <option value="fellowship">زمالة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>سنوات الخبرة</label>
+                                <input type="number" name="yearsOfExperience" id="profileYearsOfExperience" min="0" max="50">
+                            </div>
+                            <div class="form-group">
+                                <label>الجامعة</label>
+                                <input type="text" name="university" id="profileUniversity">
+                            </div>
+                            <div class="form-group">
+                                <label>سنة التخرج</label>
+                                <input type="number" name="graduationYear" id="profileGraduationYear" min="1950" max="2030">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تغيير كلمة المرور -->
+                    <div class="form-section">
+                        <h3>تغيير كلمة المرور</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>كلمة المرور الحالية</label>
+                                <input type="password" name="currentPassword" id="profileCurrentPassword" placeholder="اترك فارغاً إذا لا تريد التغيير">
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة</label>
+                                <input type="password" name="newPassword" id="profileNewPassword" placeholder="6 أحرف على الأقل">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetProfileForm()">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Urgent Section -->
+            <div id="urgent-section" class="content-section" style="display: none;">
+                <h1 class="page-title">الطلبات العاجلة</h1>
+                <div class="placeholder-content">
+                    <p>الوظائف والطلبات العاجلة ستظهر هنا</p>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -817,7 +1096,7 @@
             document.getElementById('pledgeConfirm').checked = false;
         }
         
-        function submitApplication() {
+        async function submitApplication() {
             const pledgeCheckbox = document.getElementById('pledgeConfirm');
             
             if (!pledgeCheckbox.checked) {
@@ -825,13 +1104,21 @@
                 return;
             }
             
-            // Simulate application submission
-            console.log('Application submitted for:', currentJobId);
-            
-            // Show success message
-            alert('✅ تم تقديم طلبك بنجاح!\n\nسيتم إشعارك عبر واتساب في حال قبول طلبك للمقابلة.');
-            
-            closeModal();
+            try {
+                const response = await nabdAPI.submitApplication(currentJobId, {
+                    commissionAgreement: true
+                });
+                
+                if (response.success) {
+                    alert('✅ تم تقديم طلبك بنجاح!\n\nسيتم إشعارك عبر واتساب في حال قبول طلبك للمقابلة.');
+                    closeModal();
+                } else {
+                    alert('❌ ' + (response.message || 'فشل في تقديم الطلب'));
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('❌ حدث خطأ أثناء تقديم الطلب. يرجى المحاولة مرة أخرى.');
+            }
         }
         
         function viewJobDetails(jobId) {
@@ -840,6 +1127,8 @@
         
         // Navigation
         const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.content-section');
+        
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -848,8 +1137,192 @@
                 
                 const page = link.dataset.page;
                 console.log('Navigate to:', page);
+                
+                // Hide all sections
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show target section
+                const targetSection = document.getElementById(page + '-section');
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+                
+                // Load data based on page
+                if (page === 'applications') {
+                    loadApplications();
+                } else if (page === 'urgent') {
+                    loadUrgentJobs();
+                }
             });
         });
+        
+        // Load user applications
+        async function loadApplications() {
+            try {
+                const response = await nabdAPI.getDoctorApplications();
+                if (response.success && response.data) {
+                    renderApplications(response.data.applications || []);
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+            }
+        }
+        
+        // Render applications to page
+        function renderApplications(applications) {
+            const container = document.getElementById('applications-section');
+            if (!applications || applications.length === 0) {
+                container.innerHTML = `
+                    <h1 class="page-title">طلباتي</h1>
+                    <div style="text-align: center; padding: 3rem;">
+                        <p>لم تقدم أي طلبات بعد</p>
+                        <a href="#" onclick="navigateToJobs()" style="color: var(--primary-blue);">تصفح الوظائف المتاحة</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const statusNames = {
+                'pending': 'قيد المراجعة',
+                'reviewed': 'تمت المراجعة',
+                'interview': 'مقابلة',
+                'accepted': 'مقبول',
+                'rejected': 'مرفوض',
+                'withdrawn': 'تم سحبه'
+            };
+            
+            container.innerHTML = `
+                <h1 class="page-title">طلباتي (${applications.length})</h1>
+                <div class="applications-list">
+                    ${applications.map(app => `
+                        <div class="application-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3>${app.job?.title || 'وظيفة'}</h3>
+                                <span class="status-badge status-${app.status}">${statusNames[app.status] || app.status}</span>
+                            </div>
+                            <p>تاريخ التقديم: ${new Date(app.createdAt).toLocaleDateString('ar-YE')}</p>
+                            <p>المنشأة: ${app.job?.employer?.organizationName || 'غير معروف'}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Navigate to jobs section
+        function navigateToJobs() {
+            document.querySelector('[data-page="jobs"]').click();
+        }
+        
+        // Load urgent jobs
+        async function loadUrgentJobs() {
+            try {
+                const response = await nabdAPI.getUrgentJobs();
+                if (response.success && response.data) {
+                    const container = document.getElementById('urgent-section');
+                    const jobs = response.data.jobs || [];
+                    if (jobs.length === 0) {
+                        container.innerHTML = `
+                            <h1 class="page-title">الطلبات العاجلة</h1>
+                            <div style="text-align: center; padding: 3rem;">
+                                <p>لا توجد طلبات عاجلة حالياً</p>
+                            </div>
+                        `;
+                    } else {
+                        renderJobs(jobs);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading urgent jobs:', error);
+            }
+        }
+        
+        // Load user profile into form
+        async function loadProfile() {
+            try {
+                const response = await nabdAPI.getProfile();
+                if (response.success && response.data) {
+                    const user = response.data.user;
+                    
+                    // Fill basic info
+                    document.getElementById('profileFirstName').value = user.firstName || '';
+                    document.getElementById('profileLastName').value = user.lastName || '';
+                    document.getElementById('profileEmail').value = user.email || '';
+                    document.getElementById('profilePhone').value = user.phone || '';
+                    
+                    // Fill doctor info
+                    if (user.doctorInfo) {
+                        document.getElementById('profileSpecialization').value = user.doctorInfo.specialization || '';
+                        document.getElementById('profileHighestDegree').value = user.doctorInfo.highestDegree || '';
+                        document.getElementById('profileYearsOfExperience').value = user.doctorInfo.yearsOfExperience || '';
+                        document.getElementById('profileUniversity').value = user.doctorInfo.university || '';
+                        document.getElementById('profileGraduationYear').value = user.doctorInfo.graduationYear || '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        // Reset profile form
+        function resetProfileForm() {
+            loadProfile();
+            document.getElementById('profileCurrentPassword').value = '';
+            document.getElementById('profileNewPassword').value = '';
+        }
+        
+        // Save profile changes
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                phone: formData.get('phone'),
+                doctorInfo: {
+                    specialization: formData.get('specialization'),
+                    highestDegree: formData.get('highestDegree'),
+                    yearsOfExperience: parseInt(formData.get('yearsOfExperience')) || 0,
+                    university: formData.get('university'),
+                    graduationYear: parseInt(formData.get('graduationYear')) || null
+                }
+            };
+            
+            try {
+                // Update profile
+                const response = await nabdAPI.updateProfile(data);
+                
+                // Change password if provided
+                const currentPassword = formData.get('currentPassword');
+                const newPassword = formData.get('newPassword');
+                
+                if (currentPassword && newPassword) {
+                    await nabdAPI.changePassword(currentPassword, newPassword);
+                }
+                
+                if (response.success) {
+                    alert('✅ تم حفظ التغييرات بنجاح!');
+                    // Update displayed name in header
+                    const user = nabdAPI.getCurrentUser();
+                    if (user) {
+                        document.getElementById('userName').textContent = `د. ${data.firstName} ${data.lastName}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('❌ ' + (error.message || 'فشل في حفظ التغييرات'));
+            }
+        });
+        
+        // Load profile when navigating to profile section
+        const originalProfileNav = document.querySelector('[data-page="profile"]');
+        if (originalProfileNav) {
+            originalProfileNav.addEventListener('click', () => {
+                loadProfile();
+            });
+        }
         
         // Close modal on outside click
         document.getElementById('applicationModal').addEventListener('click', (e) => {

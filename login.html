@@ -364,32 +364,33 @@
         </div>
     </div>
 
+    <script src="api-client.js"></script>
     <script>
         const loginForm = document.getElementById('loginForm');
         const alertBox = document.getElementById('alertBox');
 
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Simple validation (in real app, this would be server-side)
-            if (username && password) {
+            try {
                 showAlert('success', 'جاري تسجيل الدخول...');
+                const response = await nabdAPI.login(email, password);
                 
-                // Simulate login based on username
-                setTimeout(() => {
-                    if (username.includes('admin')) {
+                if (response.success) {
+                    const user = response.data.user;
+                    if (user.userType === 'admin') {
                         window.location.href = 'dashboard-admin.html';
-                    } else if (username.includes('hospital') || username.includes('مستشفى')) {
+                    } else if (user.userType === 'employer') {
                         window.location.href = 'dashboard-employer.html';
                     } else {
                         window.location.href = 'dashboard-doctor.html';
                     }
-                }, 1000);
-            } else {
-                showAlert('error', 'الرجاء إدخال جميع البيانات المطلوبة');
+                }
+            } catch (error) {
+                showAlert('error', error.message || 'فشل تسجيل الدخول. تأكد من البيانات.');
             }
         });
 
@@ -397,27 +398,17 @@
             alertBox.className = `alert alert-${type} show`;
             alertBox.textContent = message;
             
-            setTimeout(() => {
-                alertBox.classList.remove('show');
-            }, 5000);
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertBox.classList.remove('show');
+                }, 5000);
+            }
         }
 
-        function loginAs(role) {
-            showAlert('success', 'جاري تسجيل الدخول...');
-            
-            setTimeout(() => {
-                switch(role) {
-                    case 'doctor':
-                        window.location.href = 'dashboard-doctor.html';
-                        break;
-                    case 'employer':
-                        window.location.href = 'dashboard-employer.html';
-                        break;
-                    case 'admin':
-                        window.location.href = 'dashboard-admin.html';
-                        break;
-                }
-            }, 1000);
+        async function loginAs(role) {
+            // للتجربة فقط سنستخدم حسابات تجريبية إذا كانت موجودة أو رسالة تنبيه
+            showAlert('success', `محاولة الدخول كـ ${role}...`);
+            alert('يرجى استخدام البريد الإلكتروني وكلمة المرور الخاصة بك التي سجلت بها.');
         }
     </script>
 </body>

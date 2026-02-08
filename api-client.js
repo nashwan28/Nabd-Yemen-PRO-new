@@ -42,12 +42,17 @@ class NabdYemenAPI {
             }
 
             if (!response.ok) {
-                throw new Error(data.message || 'API request failed');
+                const error = new Error(data.message || 'API request failed');
+                error.errors = data.errors || [];
+                throw error;
             }
 
             return data;
         } catch (error) {
             console.error('API Error:', error);
+            console.error('Error type:', error.name);
+            console.error('Error message:', error.message);
+            if (error.stack) console.error('Stack:', error.stack);
             throw error;
         }
     }
